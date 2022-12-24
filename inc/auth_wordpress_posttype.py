@@ -15,7 +15,7 @@ class wordpress_posttype(apie.Authenticator):
         this.requiredKWArgs.append('post_ids')
         this.optionalKWArgs['allow_public'] = False
 
-    def UserFunction(this):
+    def Authenticate(this):
         this.request['method'] = 'GET'
         this.request['data'] = {}
         del this.request['files']
@@ -29,10 +29,11 @@ class wordpress_posttype(apie.Authenticator):
 
         if (this.allow_public and len(postsJson)):
             allow_public_access = True
-            for post in postsJson:
-                if (post['status'] != "publish"):
-                    allow_public_access = False
-                    break
+            # The Wordpress API will not return private posts unless status=private is specified.
+            # for post in postsJson:
+            #     if (post['status'] != "publish"):
+            #         allow_public_access = False
+            #         break
             if (allow_public_access):
                 logging.debug(f"Allowing anonymous access to the public posts at {this.request['url']}.")
                 return True
